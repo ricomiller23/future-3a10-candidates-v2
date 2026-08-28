@@ -1,0 +1,16 @@
+# Handoff
+
+- **Branch**: `fishdev-integration`
+- **Feature**: `specs/0/0.001-fishdev-integration` (FishDev integration)
+- **Status**: All tasks T001–T032 complete
+- **Current task**: none — 0.001 is closed
+- **Files modified this close-out**:
+  - `.config/ai/repo.ai`, `.config/ai/handoff.ai`, `.config/ai/progress.ai`
+  - `specs/0/0.001-fishdev-integration/notes.md`, `tasks.md`
+  - `lib/sec/edgar-api.ts` (removed invented `$1.25` market-cap fill)
+  - `.gitignore` (added `.next`, `*.log`)
+- **Tests**: `npm install` then `npx ts-node -O '{"module":"commonjs"}' tests/run-all-tests.ts` — passed (accuracy, domain/scoring, live ticker→CIK)
+- **Known issues (out of 0.001 scope)**:
+  - Next.js hydration overlay on `components/CandidateTable.tsx` (~line 131) in local `next dev`
+  - `npm audit`: 6 high (brace-expansion, js-yaml, nanoid, next→postcss/sharp). No critical. Not remediated this session (`npm audit fix --force` would be unsafe without a spec)
+- **Recommended next action**: Human review and commit of `fishdev-integration` if desired. Next product work needs a new spec.

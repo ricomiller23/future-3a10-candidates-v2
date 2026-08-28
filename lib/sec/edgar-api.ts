@@ -97,9 +97,7 @@ export async function fetchLiveSecCandidate(ticker: string): Promise<CandidateRe
   let marketCap = otcQuote?.marketCap || null;
   let sharePrice = otcQuote?.price || null;
 
-  if (!marketCap && shares && shares > 0) {
-    // Estimated baseline share price if live quote is throttled
-    sharePrice = 1.25;
+  if (!marketCap && sharePrice && shares && shares > 0) {
     marketCap = Math.round(shares * sharePrice);
   }
 
