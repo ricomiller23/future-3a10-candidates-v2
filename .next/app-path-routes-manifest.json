@@ -1,0 +1,9 @@
+{
+  "/_global-error/page": "/_global-error",
+  "/_not-found/page": "/_not-found",
+  "/api/audit-discrepancies/route": "/api/audit-discrepancies",
+  "/api/otc-lookup/route": "/api/otc-lookup",
+  "/api/sec-lookup/route": "/api/sec-lookup",
+  "/api/universe-scan/route": "/api/universe-scan",
+  "/page": "/"
+}

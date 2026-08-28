@@ -1,0 +1,9 @@
+{
+  "/_global-error/page": "app/_global-error/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/audit-discrepancies/route": "app/api/audit-discrepancies/route.js",
+  "/api/otc-lookup/route": "app/api/otc-lookup/route.js",
+  "/api/sec-lookup/route": "app/api/sec-lookup/route.js",
+  "/api/universe-scan/route": "app/api/universe-scan/route.js",
+  "/page": "app/page.js"
+}
