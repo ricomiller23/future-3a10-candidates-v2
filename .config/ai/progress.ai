@@ -1,0 +1,54 @@
+# Progress Log
+
+## 2026-08-28 Update – Domain constitution v2.0.0 and FishDev integration spec
+
+- Summary: Replaced the generic FishDev default constitution with a FUTURE 3a10candidatesV2 constitution (zero fabrication, provenance, canonical debt, transparent scoring, explicit data modes). Authored the first FishDev feature specification for this integration on branch `fishdev-integration`.
+- Files changed:
+  - `.specify/memory/constitution.md` (v1.0 generic → v2.0.0 project-specific)
+  - `specs/0/0.001-fishdev-integration/spec.md` (new)
+  - `specs/0/0.001-fishdev-integration/checklists/requirements.md` (new)
+  - `.specify/feature.json` (active feature directory)
+- Tests executed: none (governance and specification only)
+- Decisions made:
+  - Constitution bump is MAJOR (1.0 → 2.0.0) because generic Flyway-first database law was removed as a core principle and audit principles were added as non-negotiable product law.
+  - Spec layout follows FishDev `specs/<release>/<release>.<feature>-<name>/`, with `.specify/feature.json` pointing Spec Kit at that directory.
+  - This integration governs and protects the existing screener; it does not rebuild screening or live lookup.
+- Follow-up work: remaining open tasks in `specs/0/0.001-fishdev-integration/tasks.md` (T014, T019–T020, T024, T028–T032). `/speckit-plan` was skipped; tasks were generated from spec.md plus completed branch work.
+
+## 2026-08-28 Update – Task list for 0.001 FishDev integration
+
+- Summary: Added `tasks.md` covering completed branch work (constitution, spec, checklist, feature.json, progress) and retained V2 product surfaces, with remaining verification and session-bootstrap files left open.
+- Files changed:
+  - `specs/0/0.001-fishdev-integration/tasks.md` (new)
+- Tests executed: none
+- Decisions made:
+  - Checked-off tasks include both this-branch governance work and existing V2 product files the spec said not to rebuild.
+  - Open tasks are verify-only plus `.config/ai/repo.ai` and `.config/ai/handoff.ai`.
+- Follow-up work: T019 fill `repo.ai`; T020 fill `handoff.ai`; then product verification T014 / T028 / T029 / T031.
+
+## 2026-08-28 Update – Closed 0.001 remaining tasks (verify + session files)
+
+- Summary: Finished T014–T032. Session bootstrap files filled. Screener, discrepancy auditor, and live lookup verified. Removed invented `$1.25` share-price fill from live SEC lookup so missing quotes fail closed.
+- Files changed:
+  - `.config/ai/repo.ai`, `.config/ai/handoff.ai`
+  - `specs/0/0.001-fishdev-integration/notes.md`, `tasks.md` (all tasks checked)
+  - `lib/sec/edgar-api.ts`
+  - `.gitignore` (`.next`, `*.log`)
+- Tests executed:
+  - `npm install`
+  - `npx ts-node -O '{"module":"commonjs"}' tests/run-all-tests.ts` — pass (tolerance, validation, NKLA scoring, 8 ticker→CIK mappings, invalid ticker → null)
+  - Browser: screen → search NKLA → inspect → export; discrepancy UI for NKLA/ASTS/NBY; scanner NBY `LIVE_PARTIAL`
+  - `curl /api/audit-discrepancies` — 3 material discrepancies + GOEV match
+  - `curl /api/sec-lookup?ticker=NBY` — `LIVE_PARTIAL`, debt/cap null
+  - `curl /api/sec-lookup?ticker=INVALID999TICKER` — explicit error
+- Decisions made:
+  - Market cap may be computed only from a sourced quote price × sourced shares. Invented `$1.25` is forbidden under Principle III.
+  - `plan.md` remains absent; 0.001 closed without it.
+- Follow-up work: commit when the human asks. Optional later specs: CandidateTable hydration error; dependency audit (6 high, 0 critical).
+
+## 2026-08-28 Monthly vulnerability audit
+
+- Command: `npm audit` after fresh `npm install`
+- Findings: 6 high, 0 critical (brace-expansion DoS; js-yaml CVE-2026-59870; nanoid infinite loop; next via postcss XSS stringify and sharp/libvips CVEs)
+- Fixes this session: none. `npm audit fix --force` not applied (would change Next.js without a spec)
+- Follow-up: new spec if remediating Next/postcss/sharp is required

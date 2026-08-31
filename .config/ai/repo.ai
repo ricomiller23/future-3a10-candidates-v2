@@ -1,0 +1,10 @@
+# Repository Settings
+
+- **Product**: FUTURE 3a10candidatesV2 — internal review-grade screener for US micro-cap and small-cap 3(a)(10) claim-settlement candidates.
+- **Constitution**: `.specify/memory/constitution.md` (v2.0.0, ratified 2026-08-28). Zero fabrication is non-negotiable.
+- **Active spec**: `specs/0/0.001-fishdev-integration/` (FishDev integration: govern and protect the existing screener).
+- **Branch**: `fishdev-integration`
+- **Stack**: Next.js 16 (App Router), React 19, TypeScript 5, Tailwind CSS 4. No database. Live facts from SEC EDGAR XBRL and OTC Markets quotes. Seeded curated snapshots in `lib/data/revalidated-seed.ts`.
+- **Commands**: `npm run dev`, `npm test`, `npm run build`, `npm run lint`
+- **Tests**: `tests/run-all-tests.ts` (accuracy audit, domain model, live ticker-to-CIK resolution)
+- **Session startup**: Follow `start.ai`. Do not implement without a spec and a task.
