@@ -1,5 +1,0 @@
-1:"$Sreact.fragment"
-2:I[97367,["/_next/static/chunks/158myu8e_yme3.js"],"ViewportBoundary"]
-3:I[97367,["/_next/static/chunks/158myu8e_yme3.js"],"MetadataBoundary"]
-4:"$Sreact.suspense"
-0:{"rsc":["$","$1","h",{"children":[null,["$","$L2",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","div",null,{"hidden":true,"children":["$","$L3",null,{"children":["$","$4",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"FUTURE 3a10candidatesV2 — Audit-Ready 3(a)(10) Screener"}],["$","meta","1",{"name":"description","content":"Internal review-grade screening system for US Public Micro/Small-Cap 3(a)(10) debt settlement candidates ($100M Default Microcap Filter, Up to $500M Cap Ceiling)."}],["$","meta","2",{"name":"keywords","content":"3(a)(10),SEC EDGAR,XBRL,Accounts Payable,Debt Settlement,Microcap Screener"}]]}]}]}],null]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"gTfd8VKLPQ4hoG5qqOoxd"}

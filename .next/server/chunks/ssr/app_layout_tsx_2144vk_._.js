@@ -1,3 +1,0 @@
-module.exports=[33290,a=>{"use strict";var b=a.i(7997);a.s(["default",0,function({children:a}){return(0,b.jsx)("html",{lang:"en",className:"dark",children:(0,b.jsx)("body",{className:"bg-[#090d16] text-gray-100 antialiased min-h-screen",children:a})})},"metadata",0,{title:"FUTURE 3a10candidatesV2 — Audit-Ready 3(a)(10) Screener",description:"Internal review-grade screening system for US Public Micro/Small-Cap 3(a)(10) debt settlement candidates ($100M Default Microcap Filter, Up to $500M Cap Ceiling).",keywords:["3(a)(10)","SEC EDGAR","XBRL","Accounts Payable","Debt Settlement","Microcap Screener"]}])},70864,a=>{a.n(a.i(33290))}];
-
-//# sourceMappingURL=app_layout_tsx_2144vk_._.js.map

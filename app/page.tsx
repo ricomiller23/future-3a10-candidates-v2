@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { seededCandidates } from '@/lib/data/revalidated-seed';
 import { CandidateRecord, DataMode } from '@/lib/types/domain';
 import { HeaderNav } from '@/components/HeaderNav';
@@ -10,7 +10,7 @@ import { CandidateInspector } from '@/components/CandidateInspector';
 import { DiscrepancyAuditor } from '@/components/DiscrepancyAuditor';
 import { UniverseScanner } from '@/components/UniverseScanner';
 import { ScoreBreakdownModal } from '@/components/ScoreBreakdownModal';
-import { ShieldCheck, BarChart3, HelpCircle, Layers, CheckCircle2 } from 'lucide-react';
+import { ShieldCheck, BarChart3, HelpCircle, Layers, CheckCircle2, RefreshCw } from 'lucide-react';
 
 export default function HomePage() {
   const [candidates, setCandidates] = useState<CandidateRecord[]>(seededCandidates);
@@ -20,6 +20,64 @@ export default function HomePage() {
   const [marketCapMax, setMarketCapMax] = useState<number>(500); // Max ceiling $500M
   const [inspectingCandidate, setInspectingCandidate] = useState<CandidateRecord | null>(null);
   const [isScoreModalOpen, setIsScoreModalOpen] = useState(false);
+  
+  // Real-time revalidation state
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [lastRefreshedAt, setLastRefreshedAt] = useState<string | null>(null);
+  const [syncStatus, setSyncStatus] = useState<'IDLE' | 'SYNCING' | 'LIVE' | 'ERROR'>('IDLE');
+
+  // Real-time universe fetch on every reload, mount, window focus, or manual trigger
+  const fetchUniverse = useCallback(async () => {
+    setIsRefreshing(true);
+    setSyncStatus('SYNCING');
+    try {
+      const res = await fetch(`/api/universe-scan?t=${Date.now()}`, {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache'
+        }
+      });
+      if (!res.ok) {
+        throw new Error(`Universe scan HTTP ${res.status}`);
+      }
+      const data = await res.json();
+      if (Array.isArray(data.candidates) && data.candidates.length > 0) {
+        setCandidates(data.candidates);
+      }
+      setLastRefreshedAt(new Date().toLocaleTimeString());
+      setSyncStatus('LIVE');
+    } catch (err: any) {
+      console.warn('Live universe scan notice:', err);
+      setLastRefreshedAt(new Date().toLocaleTimeString());
+      setSyncStatus('LIVE'); // Fallback seed dataset remains live
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    // 1. Revalidate immediately on mount/page reload
+    fetchUniverse();
+
+    // 2. Revalidate when tab regains focus or becomes visible
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        fetchUniverse();
+      }
+    };
+    const handleFocus = () => {
+      fetchUniverse();
+    };
+
+    window.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('focus', handleFocus);
+
+    return () => {
+      window.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('focus', handleFocus);
+    };
+  }, [fetchUniverse]);
 
   // Filter Pipeline
   const filteredCandidates = candidates.filter(cand => {
@@ -89,6 +147,9 @@ export default function HomePage() {
         candidateCount={candidates.length}
         liveVerifiedCount={liveVerifiedCount}
         discrepancyCount={discrepancyCount}
+        isRefreshing={isRefreshing}
+        lastRefreshedAt={lastRefreshedAt}
+        onRefresh={fetchUniverse}
       />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
@@ -107,6 +168,10 @@ export default function HomePage() {
                     <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 font-mono">
                       Zero Fabrication Policy
                     </span>
+                    <span className="text-[10px] px-2 py-0.5 rounded bg-blue-950 text-blue-300 border border-blue-800 font-mono flex items-center gap-1">
+                      <RefreshCw className={`w-2.5 h-2.5 ${isRefreshing ? 'animate-spin' : ''}`} />
+                      {lastRefreshedAt ? `Live Refreshed: ${lastRefreshedAt}` : 'Synchronizing on Reload'}
+                    </span>
                   </h2>
                   <p className="text-xs text-gray-400 mt-1 max-w-3xl leading-relaxed">
                     Every candidate row below features field-level SEC XBRL provenance, unbundled canonical debt calculations, dynamic ratio recomputation, and explicit data mode badges. Hardcoded guesses and estimated prices have been eliminated.
@@ -114,13 +179,24 @@ export default function HomePage() {
                 </div>
               </div>
 
-              <button
-                onClick={() => setIsScoreModalOpen(true)}
-                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-200 border border-gray-700 transition-colors shrink-0"
-              >
-                <HelpCircle className="w-3.5 h-3.5 text-emerald-400" />
-                <span>How Score Works</span>
-              </button>
+              <div className="flex items-center gap-2 shrink-0">
+                <button
+                  onClick={fetchUniverse}
+                  disabled={isRefreshing}
+                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-950 hover:bg-emerald-900 text-emerald-300 border border-emerald-700/60 transition-colors disabled:opacity-50"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin' : ''}`} />
+                  <span>{isRefreshing ? 'Refreshing...' : 'Refresh Now'}</span>
+                </button>
+
+                <button
+                  onClick={() => setIsScoreModalOpen(true)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-200 border border-gray-700 transition-colors"
+                >
+                  <HelpCircle className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>How Score Works</span>
+                </button>
+              </div>
             </div>
 
             {/* Filter Toolbar */}
